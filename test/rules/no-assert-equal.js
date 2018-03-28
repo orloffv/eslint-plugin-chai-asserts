@@ -23,12 +23,19 @@ ruleTester.run('no-assert-equal', rules['no-assert-equal'], {
     ],
     invalid: [
         {
-            code: 'it(function() {equal(a, b);})',
-            errors: [ { message: ERROR_TEMPLATE_GLOBAL, column: 16, line: 1 } ]
+            code: 'it(function() {var a = 1; b = 1; equal(a, b);})',
+            errors: [ { message: ERROR_TEMPLATE_GLOBAL, column: 34, line: 1 } ],
+            output: 'it(function() {var a = 1; b = 1; strictEqual(a, b);})'
         },
         {
-            code: 'it(function() {assert.equal(a, b);})',
-            errors: [ { message: getErrorMessage('assert'), column: 16, line: 1 } ]
+            code: 'it(function() {var a = 1; b = 1; assert.equal(a, b);})',
+            errors: [ { message: getErrorMessage('assert'), column: 34, line: 1 } ],
+            output: 'it(function() {var a = 1; b = 1; assert.strictEqual(a, b);})'
+        },
+        {
+            code: 'it(function() {assert.equal(\'b\', \'b\');})',
+            errors: [ { message: getErrorMessage('assert'), column: 16, line: 1 } ],
+            output: 'it(function() {assert.strictEqual(\'b\', \'b\');})'
         }
     ]
 });
